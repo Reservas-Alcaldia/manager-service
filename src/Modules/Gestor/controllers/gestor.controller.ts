@@ -1,4 +1,3 @@
-// solicitudes.controller.ts
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { SolicitudesService } from '../Services/gestor.service';
