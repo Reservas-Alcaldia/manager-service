@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Solicitud } from 'src/Entities/solicitud.entity';
@@ -11,66 +11,43 @@ export class GestorService {
   ) {}
 
   async getSolicitudesAprobadas(): Promise<Solicitud[]> {
-    try {
-      const solicitudesAprobadas = await this.gestorRepository.find({
-        where: { Estado: 1 }, 
-        relations: ['fechas'], 
-      });
+    const solicitudesAprobadas = await this.gestorRepository.find({
+      where: { Estado: 1 },
+      relations: ['fechas'],
+    });
   
-      if (!solicitudesAprobadas.length) {
-        throw new NotFoundException("No se encontraron solicitudes aprobadas.");
-      }
-  
-      return solicitudesAprobadas;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException("Error al recuperar las solicitudes aprobadas: " + error.message);
+    if (!solicitudesAprobadas.length) {
+      throw new NotFoundException("No se encontraron solicitudes aprobadas.");
     }
+  
+    return solicitudesAprobadas;
   }
   
   async getSolicitudesNoAprobadas(): Promise<Solicitud[]> {
-    try {
-      const solicitudesNoAprobadas = await this.gestorRepository.find({
-        where: { Estado: 0 },
-        relations: ['fechas'], 
-      });
+    const solicitudesNoAprobadas = await this.gestorRepository.find({
+      where: { Estado: 0 },
+      relations: ['fechas'],
+    });
   
-      if (!solicitudesNoAprobadas.length) {
-        throw new NotFoundException("No se encontraron solicitudes no aprobadas.");
-      }
-  
-      return solicitudesNoAprobadas;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException("Error al recuperar las solicitudes no aprobadas: " + error.message);
+    if (!solicitudesNoAprobadas.length) {
+      throw new NotFoundException("No se encontraron solicitudes no aprobadas.");
     }
+  
+    return solicitudesNoAprobadas;
   }
-
+  
   async getSolicitudesEnEspera(): Promise<Solicitud[]> {
-    try {
-      const solicitudesEnEspera = await this.gestorRepository.find({
-        where: { Estado: 2 }, 
-        relations: ['fechas'], 
-      });
+    const solicitudesEnEspera = await this.gestorRepository.find({
+      where: { Estado: 2 },
+      relations: ['fechas'],
+    });
   
-      if (!solicitudesEnEspera.length) {
-        throw new NotFoundException("No se encontraron solicitudes en espera.");
-      }
-  
-      return solicitudesEnEspera;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException("Error al recuperar las solicitudes en espera: " + error.message);
+    if (!solicitudesEnEspera.length) {
+      throw new NotFoundException("No se encontraron solicitudes en espera.");
     }
+  
+    return solicitudesEnEspera;
   }
-  
-  
   
 }
 
