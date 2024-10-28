@@ -1,15 +1,15 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { SolicitudesService } from '../Services/gestor.service';
+import { GestorService } from '../Services/gestor.service';
 
 @Controller('solicitudes')
-export class SolicitudesController {
-  constructor(private readonly solicitudesService: SolicitudesService) {}
+export class GestorController {
+  constructor(private readonly gestorService: GestorService) {}
 
   @Get('/approved') 
   async getSolicitudesAprobadas(@Res() res: Response) {
     try {
-      const solicitudes = await this.solicitudesService.getSolicitudesAprobadas();
+      const solicitudes = await this.gestorService.getSolicitudesAprobadas();
       return res.status(HttpStatus.OK).json({
         status: 200,
         message: "ok",
@@ -32,7 +32,7 @@ export class SolicitudesController {
   @Get('/notapproved')
   async getSolicitudesNoAprobadas(@Res() res: Response) {
     try {
-      const solicitudes = await this.solicitudesService.getSolicitudesNoAprobadas();
+      const solicitudes = await this.gestorService.getSolicitudesNoAprobadas();
       return res.status(HttpStatus.OK).json({
         status: 200,
         message: "ok",
@@ -55,7 +55,7 @@ export class SolicitudesController {
   @Get('/toapprove')
   async getSolicitudesEnEspera(@Res() res: Response) {
     try {
-      const solicitudes = await this.solicitudesService.getSolicitudesEnEspera();
+      const solicitudes = await this.gestorService.getSolicitudesEnEspera();
       return res.status(HttpStatus.OK).json({
         status: 200,
         message: "ok",

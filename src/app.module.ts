@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './Database/Database.module';
-import { SalasModule } from './Modules/Gestor/Module/gestor.module';
+import { GestorModule } from './Modules/Gestor/Module/gestor.module';
 
 
 @Module({
   imports: [
     DatabaseModule,
-    SalasModule
+    GestorModule
   ],
   controllers: [],
   providers: [],

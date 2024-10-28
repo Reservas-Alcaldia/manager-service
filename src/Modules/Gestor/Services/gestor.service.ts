@@ -4,15 +4,15 @@ import { Repository } from 'typeorm';
 import { Solicitud } from 'src/Entities/solicitud.entity';
 
 @Injectable()
-export class SolicitudesService {
+export class GestorService {
   constructor(
     @InjectRepository(Solicitud)
-    private solicitudesRepository: Repository<Solicitud>,
+    private gestorRepository: Repository<Solicitud>,
   ) {}
 
   async getSolicitudesAprobadas(): Promise<Solicitud[]> {
     try {
-      const solicitudesAprobadas = await this.solicitudesRepository.find({
+      const solicitudesAprobadas = await this.gestorRepository.find({
         where: { Estado: 1 }, 
         relations: ['fechas'], 
       });
@@ -32,7 +32,7 @@ export class SolicitudesService {
   
   async getSolicitudesNoAprobadas(): Promise<Solicitud[]> {
     try {
-      const solicitudesNoAprobadas = await this.solicitudesRepository.find({
+      const solicitudesNoAprobadas = await this.gestorRepository.find({
         where: { Estado: 0 },
         relations: ['fechas'], 
       });
@@ -52,7 +52,7 @@ export class SolicitudesService {
 
   async getSolicitudesEnEspera(): Promise<Solicitud[]> {
     try {
-      const solicitudesEnEspera = await this.solicitudesRepository.find({
+      const solicitudesEnEspera = await this.gestorRepository.find({
         where: { Estado: 2 }, 
         relations: ['fechas'], 
       });
