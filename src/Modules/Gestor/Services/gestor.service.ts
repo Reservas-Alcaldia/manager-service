@@ -13,7 +13,6 @@ export class GestorService {
   async getSolicitudesAprobadas(): Promise<Solicitud[]> {
     const solicitudesAprobadas = await this.gestorRepository.find({
       where: { Estado: 1 },
-      relations: ['fechas'],
     });
   
     if (!solicitudesAprobadas.length) {
@@ -26,7 +25,6 @@ export class GestorService {
   async getSolicitudesNoAprobadas(): Promise<Solicitud[]> {
     const solicitudesNoAprobadas = await this.gestorRepository.find({
       where: { Estado: 0 },
-      relations: ['fechas'],
     });
   
     if (!solicitudesNoAprobadas.length) {
@@ -39,7 +37,6 @@ export class GestorService {
   async getSolicitudesEnEspera(): Promise<Solicitud[]> {
     const solicitudesEnEspera = await this.gestorRepository.find({
       where: { Estado: 2 },
-      relations: ['fechas'],
     });
   
     if (!solicitudesEnEspera.length) {

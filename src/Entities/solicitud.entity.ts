@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Sala } from './sala.entity';
 import { Secretaria } from './secretaria.entity';
-import { FechaReserva } from './fecha-reserva.entity';
 
 @Entity('Solicitudes')
 export class Solicitud {
@@ -17,7 +16,7 @@ export class Solicitud {
   @Column({ length: 100 })
   Correo: string;
 
-  @Column('int')
+  @Column('bigint')
   Telefono: number;
 
   @Column({ length: 100 })
@@ -28,6 +27,9 @@ export class Solicitud {
 
   @Column('time')
   Hora_final: string;
+
+  @Column('date')
+  Fecha_reserva: Date;
 
   @Column('int')
   Num_asistentes: number;
@@ -45,11 +47,10 @@ export class Solicitud {
   Estado: number;
 
   @ManyToOne(() => Sala, sala => sala.solicitudes)
+  @JoinColumn({name: 'id_sala'})
   id_sala: Sala;
 
   @ManyToOne(() => Secretaria, secretaria => secretaria.solicitudes)
+  @JoinColumn({name: 'id_secretarias'})
   id_secretarias: Secretaria;
-
-  @OneToMany(() => FechaReserva, fecha => fecha.id_solicitudes) 
-  fechas: FechaReserva[];
 }
