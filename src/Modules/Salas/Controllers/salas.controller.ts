@@ -17,6 +17,18 @@ export class SalasController {
     return this.createResponse(salas)
   }
 
+  @Get('/intervalos-individual/:id')
+  async obtenerIntervalosDisponibles(@Param('id') idSolicitud: number) {
+    const intervalos = await this.salasService.obtenerIntervalosIndividuales(idSolicitud);
+    return this.createResponse(intervalos);
+  }
+
+  @Get('/intervalos-combinados/:id')
+  async obtenerDisponibilidadCombinada(@Param('id') idSolicitud: number) {
+    const disponibilidad = await this.salasService.obtenerIntervalosCombinados(idSolicitud);
+    return this.createResponse(disponibilidad);
+  }
+
   private createResponse(data: any) {
     return {
       status: HttpStatus.OK,
