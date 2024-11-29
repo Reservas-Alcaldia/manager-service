@@ -13,6 +13,7 @@ export class SalasService {
   async verificarDisponibilidadIndividual(idSolicitud: number): Promise<string[]> {
     const solicitud = await this.solicitudRepository.findOne({
       where: { id_solicitudes: idSolicitud, Estado: 2 },
+      relations: ['id_sala'],
     });
 
     if (!solicitud) {
@@ -36,60 +37,65 @@ export class SalasService {
 
       disponibilidadSalas.push({
         id_sala: i,
-        estado: solicitudesAprobadas.length > 0 ? 0 : 1, 
+        estado: solicitudesAprobadas.length > 0 ? 0 : 1,
+        rangoHoras: `${Hora_inicio} - ${Hora_final}`
       });
     }
 
     return disponibilidadSalas;
   }
 
-  async verificarDisponibilidadCombinada(idSolicitud: number): Promise<{ id_sala: number; estado: number }[]> {
+  async verificarDisponibilidadCombinada(idSolicitud: number): Promise<{ id_sala: number; estado: number, rangoHoras: string }[]> {
     const solicitud = await this.solicitudRepository.findOne({
-      where: { id_solicitudes: idSolicitud, Estado: 2 },
+        where: { id_solicitudes: idSolicitud, Estado: 2 },
     });
-
+  
     if (!solicitud) {
-      throw new NotFoundException('Solicitud no encontrada o no esta en espera');
+        throw new NotFoundException('Solicitud no encontrada o no está en espera');
     }
-
+  
     const { Fecha_reserva, Hora_inicio, Hora_final } = solicitud;
-
+  
     const salasCombinadas = [
-      { id: 7, individuales: [1, 2] },
-      { id: 8, individuales: [3, 4] },
-      { id: 9, individuales: [5, 6] },
+        { id: 7, individuales: [1, 2] },
+        { id: 8, individuales: [3, 4] },
+        { id: 9, individuales: [5, 6] },
     ];
-
+  
     const disponibilidadSalas = await Promise.all(salasCombinadas.map(async ({ id, individuales }) => {
-      const solicitudesAprobadas = await this.solicitudRepository.find({
-        where: {
-          Estado: 1,
-          id_sala: Equal(id),
-          Fecha_reserva: Fecha_reserva,
-          Hora_inicio: LessThanOrEqual(Hora_final),
-          Hora_final: MoreThanOrEqual(Hora_inicio),
-        },
-      });
-
-      const individualesAprobadas = await Promise.all(individuales.map(async (sala) => {
-        return this.solicitudRepository.find({
-          where: {
-            Estado: 1,
-            id_sala: Equal(sala),
-            Fecha_reserva: Fecha_reserva,
-            Hora_inicio: LessThanOrEqual(Hora_final),
-            Hora_final: MoreThanOrEqual(Hora_inicio),
-          },
+        const solicitudesAprobadas = await this.solicitudRepository.find({
+            where: {
+                Estado: 1,
+                id_sala: Equal(id),
+                Fecha_reserva: Fecha_reserva,
+                Hora_inicio: LessThanOrEqual(Hora_final),
+                Hora_final: MoreThanOrEqual(Hora_inicio),
+            },
         });
-      }));
-
-      const noDisponible = solicitudesAprobadas.length > 0 || individualesAprobadas.some(solicitudes => solicitudes.length > 0);
-
-      return { id_sala: id, estado: noDisponible ? 0 : 1 };
+  
+        const individualesAprobadas = await Promise.all(individuales.map(async (sala) => {
+            return this.solicitudRepository.find({
+                where: {
+                    Estado: 1,
+                    id_sala: Equal(sala),
+                    Fecha_reserva: Fecha_reserva,
+                    Hora_inicio: LessThanOrEqual(Hora_final),
+                    Hora_final: MoreThanOrEqual(Hora_inicio),
+                },
+            });
+        }));
+  
+        const noDisponible = solicitudesAprobadas.length > 0 || individualesAprobadas.some(solicitudes => solicitudes.length > 0);
+  
+        return { 
+            id_sala: id, 
+            estado: noDisponible ? 0 : 1, 
+            rangoHoras: `${Hora_inicio} - ${Hora_final}`
+        };
     }));
-
+  
     return disponibilidadSalas;
-  }
+  }
 
   private readonly horaApertura = '07:00:00';
   private readonly horaCierre = '17:00:00';

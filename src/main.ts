@@ -5,7 +5,14 @@ import { CustomValidationPipe } from './Common/Pipes/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new HttpExceptionFilter)
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE',
+    allowedHeaders: 'Content-type, Authorization'
+  }); 
+
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new CustomValidationPipe());
   await app.listen(process.env.PORT ?? 3000);
 }
